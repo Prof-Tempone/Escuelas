@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PREGUNTADOS Redes Sociales</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+        }
+        .header {
+            width: 100%;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .header img {
+            max-width: 100%;
+            height: auto;
+        }
+        .quiz-container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 500px;
+        }
+        .question {
+            margin-bottom: 20px;
+        }
+        .options button {
+            display: block;
+            margin: 10px 0;
+            padding: 10px;
+            width: 100%;
+            background: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .options button:hover {
+            background: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+        #retry {
+            display: none;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #retry:hover {
+            background: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="imagenesredes.png" alt="Encabezado Redes Sociales">
+    </div>
+    <div class="quiz-container">
+        <div id="quiz">
+            <div id="question" class="question"></div>
+            <div id="options" class="options"></div>
+        </div>
+        <div id="result" class="result"></div>
+        <button id="retry" onclick="retryQuiz()">Reintentar</button>
+    </div>
+
+    <script>
+        const questions = [
+            { question: "¿En qué año se lanzó Facebook?", options: ["2002", "2004", "2006", "2008"], answer: 1 },
+            { question: "¿Qué red social es conocida por sus videos cortos y virales?", options: ["Instagram", "TikTok", "Snapchat", "Twitter"], answer: 1 },
+            { question: "¿Quién es el fundador de Facebook?", options: ["Jack Dorsey", "Mark Zuckerberg", "Evan Spiegel", "Larry Page"], answer: 1 },
+            { question: "¿Qué red social se caracteriza por mensajes de 280 caracteres?", options: ["Twitter", "LinkedIn", "WhatsApp", "Tumblr"], answer: 0 },
+            { question: "¿Cuál es el logo de Snapchat?", options: ["Un fantasma", "Un pájaro", "Una cámara", "Un corazón"], answer: 0 },
+            { question: "¿Qué red social utiliza hashtags para clasificar contenido?", options: ["Pinterest", "Instagram", "Facebook", "Todas las anteriores"], answer: 3 },
+            { question: "¿Cuál es el color principal del logo de LinkedIn?", options: ["Rojo", "Azul", "Verde", "Amarillo"], answer: 1 },
+            { question: "¿Qué red social es ideal para buscar empleo?", options: ["Facebook", "LinkedIn", "Twitter", "TikTok"], answer: 1 },
+            { question: "¿Cuál fue la primera red social popular?", options: ["MySpace", "Hi5", "Friendster", "Orkut"], answer: 0 },
+            { question: "¿En qué red social se utilizan pines para guardar ideas?", options: ["Instagram", "Pinterest", "Tumblr", "Snapchat"], answer: 1 },
+            // Agregar 20 preguntas adicionales
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        const totalQuestions = 10;
+
+        function shuffle(array) {
+            return array.sort(() => Math.random() - 0.5);
+        }
+
+        const quizQuestions = shuffle([...questions]).slice(0, totalQuestions);
+
+        function loadQuestion() {
+            const questionElement = document.getElementById("question");
+            const optionsElement = document.getElementById("options");
+            const currentQuestion = quizQuestions[currentQuestionIndex];
+
+            questionElement.textContent = currentQuestion.question;
+            optionsElement.innerHTML = "";
+
+            currentQuestion.options.forEach((option, index) => {
+                const button = document.createElement("button");
+                button.textContent = option;
+                button.onclick = () => checkAnswer(index);
+                optionsElement.appendChild(button);
+            });
+        }
+
+        function checkAnswer(selectedIndex) {
+            const currentQuestion = quizQuestions[currentQuestionIndex];
+
+            if (selectedIndex === currentQuestion.answer) {
+                score++;
+                alert("¡Correcto!");
+                currentQuestionIndex++;
+
+                if (currentQuestionIndex < totalQuestions) {
+                    loadQuestion();
+                } else {
+                    showResult();
+                }
+            } else {
+                alert("Incorrecto. La respuesta correcta era: " + currentQuestion.options[currentQuestion.answer]);
+                document.getElementById("retry").style.display = "block";
+            }
+        }
+
+        function showResult() {
+            const quizElement = document.getElementById("quiz");
+            const resultElement = document.getElementById("result");
+
+            quizElement.style.display = "none";
+
+            const percentage = (score / totalQuestions) * 100;
+            if (percentage >= 70) {
+                resultElement.textContent = `¡Felicidades! Aprobaste el examen con un ${percentage}% de aciertos.`;
+            } else {
+                resultElement.textContent = `Lo siento. No aprobaste el examen. Tu puntuación fue ${percentage}%.`;
+                document.getElementById("retry").style.display = "block";
+            }
+        }
+
+        function retryQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            document.getElementById("retry").style.display = "none";
+            document.getElementById("quiz").style.display = "block";
+            document.getElementById("result").textContent = "";
+            loadQuestion();
+        }
+
+        loadQuestion();
+    </script>
+</body>
+</html>
